@@ -1,0 +1,21 @@
+# Ignore node_modules in all folders
+admin/node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Ignore env files (sensitive info)
+admin/.env
+frontend/.env
+backend/.env
+
+# Ignore log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build or dist directories (optional)
+frontend/build/
+admin/build/
+backend/dist/
