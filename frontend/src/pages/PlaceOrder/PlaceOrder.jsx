@@ -3,7 +3,6 @@ import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 
-
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
@@ -14,7 +13,6 @@ const loadRazorpayScript = () => {
     document.body.appendChild(script);
   });
 };
-
 
 const PlaceOrder = () => {
   const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
@@ -31,7 +29,6 @@ const PlaceOrder = () => {
     phone: ""
   });
 
-
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -47,6 +44,7 @@ const PlaceOrder = () => {
       return;
     }
 
+    // collect items
     let orderItems = [];
     food_list.forEach((item) => {
       if (cartItems[item._id] > 0) {
@@ -59,47 +57,35 @@ const PlaceOrder = () => {
     const finalAmount = totalAmount + deliveryFee;
 
     const orderData = {
+      userId: token?.userId,
       address: data,
       items: orderItems,
       amount: finalAmount,
     };
 
     try {
-      const response = await axios.post(`${url}/api/order/place`, orderData, { headers: { token } });
+      const response = await axios.post(`${url}/api/order/place`, orderData, {
+        headers: { token }
+      });
 
       if (response.data.success) {
         const { amount, razorpayOrderId, key, currency, orderId } = response.data;
 
         const options = {
-          key: key,
-          amount: amount,
-          currency: currency,
+          key,
+          amount,
+          currency,
           name: "Food Delivery App",
           description: "Order Payment",
           order_id: razorpayOrderId,
-          handler: async function (res) {
-            try {
-              const verifyResponse = await axios.post(`${url}/api/order/verify`, {
-                razorpay_order_id: res.razorpay_order_id,
-                razorpay_payment_id: res.razorpay_payment_id,
-                razorpay_signature: res.razorpay_signature,
-                orderId: orderId,
-              }, { headers: { token } });
-
-              if (verifyResponse.data.success) {
-                window.location.href = `/verify?success=true&orderId=${orderId}`;
-              } else {
-                window.location.href = `/verify?success=false&orderId=${orderId}`;
-              }
-            } catch (error) {
-              console.error("Verification error:", error);
-              window.location.href = `/verify?success=false&orderId=${orderId}`;
-            }
+          handler: function (res) {
+            // ✅ Redirect to verify page with Razorpay details
+            window.location.href = `/verify?razorpay_order_id=${res.razorpay_order_id}&razorpay_payment_id=${res.razorpay_payment_id}&razorpay_signature=${res.razorpay_signature}&orderId=${orderId}`;
           },
           prefill: {
             name: `${data.firstName} ${data.lastName}`,
             email: data.email,
-            contact: "9999999999",
+            contact: data.phone || "9999999999",
           },
           notes: {
             address: `${data.street}, ${data.city}, ${data.state}, ${data.zipcode}`,
