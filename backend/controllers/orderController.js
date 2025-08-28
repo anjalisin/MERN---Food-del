@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 
 // ------------------- Place Order -------------------
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5174/";
+  const frontend_url = "https://mern-food-del-frontend-lmfy.onrender.com/";
 
   try {
     const { items, amount, address } = req.body;
