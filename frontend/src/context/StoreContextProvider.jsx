@@ -10,18 +10,25 @@ const StoreContextProvider = ({ children }) => {
     const [food_list, setFoodList] = useState([])
 
     const addToCart = async (itemId) => {
-        if (!cartItems[itemId]) {
-            setCartItems((prev) => ({ ...prev, [itemId]: 1 }))
-        }
-        else {
-            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }))
-        }
+        setCartItems((prev = {}) => ({
+            ...prev,
+            [itemId]: (prev[itemId] || 0) + 1
+        }));
+
         if (token) {
             await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
         }
     }
     const removeFromCart = async (itemId) => {
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }))
+        setCartItems((prev = {}) => {
+            const updated = { ...prev };
+            if (updated[itemId] > 1) {
+                updated[itemId] -= 1;
+            } else {
+                delete updated[itemId];
+            }
+            return updated;
+        });
         if (token) {
             await axios.post(url + "/api/cart/remove", { itemId }, { headers: { token } })
         }
