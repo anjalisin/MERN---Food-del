@@ -40,8 +40,37 @@ An **Admin Panel** is also available for managing food items and orders.
 
 Clone the repo and run both frontend and backend locally.
 
- Acknowledgements
+2. Setup Backend
+cd backend
+npm install
+npm run dev
 
+
+Backend runs on: http://localhost:4000
+
+3. Setup Frontend
+cd ../frontend
+npm install
+npm run dev
+
+
+Frontend runs on: http://localhost:5173
+
+4. Setup Admin
+cd ../admin
+npm install
+npm run dev
+
+
+Admin runs on: http://localhost:5174
+
+📂 Project Structure
+/admin      → Admin panel (React)
+/backend    → Backend (Node.js, Express, MongoDB)
+/frontend   → Frontend (React + Vite)
+
+
+🙌 Acknowledgements
 Render
  for free hosting
 
