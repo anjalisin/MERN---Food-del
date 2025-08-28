@@ -15,9 +15,16 @@ const razorpay = new Razorpay({
 // ------------------- Place Order -------------------
 const placeOrder = async (req, res) => {
   try {
-    const { userId, items, amount, address } = req.body;
-
+    const { items, amount, address } = req.body;
+    const userId = req.userId; // ✅ coming from auth middleware
+    console.log("Incoming order:", { userId, items, amount, address });
     // Save order in DB with "pending"
+    if (!userId) {
+      console.log("❌ No userId found in req");
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID missing" });
+    }
     const newOrder = new orderModel({
       userId,
       items,
@@ -28,15 +35,17 @@ const placeOrder = async (req, res) => {
     });
 
     await newOrder.save();
-
+    console.log("Order saved:", newOrder._id);
     // Create Razorpay order
     const options = {
       amount: amount * 100, // convert to paisa
       currency: "INR",
       receipt: `order_${newOrder._id}`,
     };
+    console.log("Creating Razorpay order with:", options);
 
     const razorpayOrder = await razorpay.orders.create(options);
+    console.log("Razorpay order created:", razorpayOrder);
 
     res.json({
       success: true,
