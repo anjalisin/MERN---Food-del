@@ -5,7 +5,8 @@ import axios from "axios";
 
 const StoreContextProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState({});
-    const url = import.meta.env.VITE_API_URL;
+    const url = "https://mern-food-del-backend-z947.onrender.com";
+
     const [token, setToken] = useState("");
     const [food_list, setFoodList] = useState([])
 
