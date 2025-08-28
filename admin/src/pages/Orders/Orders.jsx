@@ -3,9 +3,9 @@ import './Orders.css'
 import { toast } from "react-toastify"
 import axios from 'axios'
 import { assets } from "../../assets/assets";
+import { url } from "../../assets/assets" 
 
-
-const Orders = ({ url }) => {
+const Orders = () => {
 
     const [orders, setOrders] = useState([]);
 
