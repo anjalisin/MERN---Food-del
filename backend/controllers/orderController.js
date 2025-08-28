@@ -17,14 +17,13 @@ const placeOrder = async (req, res) => {
   try {
     const { items, amount, address } = req.body;
     const userId = req.userId; // ✅ coming from auth middleware
-    console.log("Incoming order:", { userId, items, amount, address });
     // Save order in DB with "pending"
-    if (!userId) {
-      console.log("❌ No userId found in req");
-      return res
-        .status(400)
-        .json({ success: false, message: "User ID missing" });
-    }
+    // if (!userId) {
+    //   console.log("❌ No userId found in req");
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "User ID missing" });
+    // }
     const newOrder = new orderModel({
       userId,
       items,
@@ -35,23 +34,25 @@ const placeOrder = async (req, res) => {
     });
 
     await newOrder.save();
-    console.log("Order saved:", newOrder._id);
+    // console.log("Order saved:", newOrder._id);
     // Create Razorpay order
     const options = {
       amount: amount * 100, // convert to paisa
       currency: "INR",
       receipt: `order_${newOrder._id}`,
     };
-    console.log("Creating Razorpay order with:", options);
+    //console.log("Creating Razorpay order with:", options);
 
     const razorpayOrder = await razorpay.orders.create(options);
-    console.log("Razorpay order created:", razorpayOrder);
+    //console.log("Razorpay order created:", razorpayOrder);
 
     res.json({
       success: true,
-      message: "Order placed successfully",
-      order: newOrder,
-      razorpayOrder,
+      key: process.env.RAZORPAY_KEY_ID,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      razorpayOrderId: razorpayOrder.id, // 👈 use consistent name
+      orderId: newOrder._id,
     });
   } catch (error) {
     console.error("Error in placeOrder:", error);
