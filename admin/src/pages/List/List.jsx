@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './List.css'
 import axios from "axios"
 import { toast } from "react-toastify"
-
-const List = ({ url }) => {
+import { url } from "../../assets/assets" 
+const List = () => {
 
     const [list, setList] = useState([]);
 
