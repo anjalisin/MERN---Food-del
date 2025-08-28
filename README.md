@@ -46,23 +46,17 @@ npm install
 npm run dev
 
 
-Backend runs on: http://localhost:4000
-
 3. Setup Frontend
 cd ../frontend
 npm install
 npm run dev
 
 
-Frontend runs on: http://localhost:5173
-
 4. Setup Admin
 cd ../admin
 npm install
 npm run dev
 
-
-Admin runs on: http://localhost:5174
 
 📂 Project Structure
 /admin      → Admin panel (React)
