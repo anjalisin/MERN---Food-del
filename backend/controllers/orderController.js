@@ -14,6 +14,8 @@ const razorpay = new Razorpay({
 
 // ------------------- Place Order -------------------
 const placeOrder = async (req, res) => {
+  const frontend_url = "http://localhost:5174/";
+
   try {
     const { items, amount, address } = req.body;
     const userId = req.userId; // ✅ coming from auth middleware
@@ -113,19 +115,28 @@ const userOrders = async (req, res) => {
     res.json({ success: false, message: "Error" });
   }
 };
+// -----Listing orders for admin panel------
+const listOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find({});
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
 
-// ------------------- Update Status (Admin) -------------------
-// const updateStatus = async (req, res) => {
-//   try {
-//     const { orderId, status } = req.body;
-//     await orderModel.findByIdAndUpdate(orderId, { status });
-
-//     res.json({ success: true, message: "Order status updated" });
-//   } catch (error) {
-//     console.error("Error in updateStatus:", error);
-//     res.status(500).json({ success: false, message: "Internal Server Error" });
-//   }
-// };
+// ------------------- api for Update Status (Admin) -------------------
+const updateStatus = async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+    await orderModel.findByIdAndUpdate(orderId, { status });
+    res.json({ success: true, message: "Order status updated" });
+  } catch (error) {
+    console.error("Error in updateStatus:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //  Export all controllers
-export { placeOrder, verifyOrder, userOrders };
+export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
